@@ -5,16 +5,16 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints
 
-object TrajectoryGen {
+object TrajectoryGenv2 {
     // Remember to set these constraints to the same values as your DriveConstants.java file in the quickstart
     private val driveConstraints = DriveConstraints(60.0, 60.0, 0.0, 270.0.toRadians, 270.0.toRadians, 0.0)
 
     // Remember to set your track width to an estimate of your actual bot to get accurate trajectory profile duration!
-    private const val trackWidth = 16.5
+    private const val trackWidth = 15.55;
 
     private val combinedConstraints = MecanumConstraints(driveConstraints, trackWidth)
 
-    private val startPose = Pose2d(-62.0, -25.0, 0.0.toRadians)
+    private val startPose = Pose2d(-62.0, -18.0, 0.0.toRadians)
     private val secondPose = Pose2d(-62.0, -20.0, 0.0.toRadians)
     private val launchPose = Pose2d(0.0, -40.0, 0.0.toRadians);
 
@@ -32,7 +32,7 @@ object TrajectoryGen {
     private val FinalZoneB = Pose2d(36.0, -20.0, 0.0)
     private val FinalZoneC = Pose2d(55.0, -40.0, 0.0)
 
-    private val RingNumber = 1;
+    private val RingNumber = 4;
 
 //    0 = A
 //    1 = B
@@ -42,7 +42,7 @@ object TrajectoryGen {
         val list = ArrayList<Trajectory>()
 
         val AvoidRings = TrajectoryBuilder(startPose, startPose.heading, combinedConstraints)
-        val MoveToLaunchArea = TrajectoryBuilder(secondPose, secondPose.heading, combinedConstraints)
+        val MoveToLaunchArea = TrajectoryBuilder(startPose, startPose.heading, combinedConstraints)
 
 //        deliver 1st wobble goal
         val ZoneA = TrajectoryBuilder(launchPose, launchPose.heading, combinedConstraints)
@@ -73,7 +73,7 @@ object TrajectoryGen {
 //      detect number of rings
 
 //      avoid rings
-        AvoidRings.strafeLeft(5.0);
+//        AvoidRings.strafeLeft(5.0);
 
 //        move to launch area
         MoveToLaunchArea.forward(40.0);
@@ -97,10 +97,11 @@ object TrajectoryGen {
 
 
         ZoneBReturn1
-            .splineTo(Vector2d(-0.0, -20.0), 180.0.toRadians)
+            .splineTo(Vector2d(30.0, -20.0), 180.0.toRadians)
+            .splineTo(Vector2d(0.0, -37.0), 180.0.toRadians)
 
-        ZoneBReturn2
-            .strafeRight(17.0)
+//        ZoneBReturn2
+//            .strafeRight(17.0)
 
 //      picking up rings
 
@@ -154,7 +155,7 @@ object TrajectoryGen {
 
 //        COMPILE ALL THE TRAJECTORIES
 
-        list.add(AvoidRings.build())
+//        list.add(AvoidRings.build())
         list.add(MoveToLaunchArea.build())
 
         when (RingNumber) {
@@ -166,7 +167,7 @@ object TrajectoryGen {
             1 -> {
                 list.add(ZoneB.build())
                 list.add(ZoneBReturn1.build())
-                list.add(ZoneBReturn2.build())
+//                list.add(ZoneBReturn2.build())
                 list.add(ZoneBReturn3.build())
                 list.add(ZoneB1.build())
                 list.add(ParkFromB.build())
@@ -192,4 +193,3 @@ object TrajectoryGen {
     val Double.toRadians get() = (Math.toRadians(this))
 }
 
-//val Double.toRadians get() = (Math.toRadians(this))
